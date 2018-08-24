@@ -23,18 +23,18 @@ class AbstractCcr(object):
 
         # lidar scan subscriber
         if use_lidar:
-            self.scan = LaserScan()
+            self.scan = LaserScan().ranges
             self.lidar_sub = rospy.Subscriber('scan', LaserScan, self.lidarCallback)
 
         # optical sensor scan subscriber
         if use_opt:
-            self.opt = [LaserScan(), LaserScan()]
+            self.opt = [LaserScan().ranges, LaserScan().ranges]
             self.opt_left_sub = rospy.Subscriber('opt_left', LaserScan, self.optLeftCallback)
             self.opt_right_sub = rospy.Subscriber('opt_right', LaserScan, self.optRightCallback)
 
         # ultrasonic sensor scan subscriber
         if use_usonic:
-            self.usonic = [LaserScan(), LaserScan()]
+            self.usonic = [LaserScan().ranges, LaserScan().ranges]
             self.usonic_left_sub = rospy.Subscriber('us_left', LaserScan, self.usonicLeftCallback)
             self.usonic_right_sub = rospy.Subscriber('us_right', LaserScan, self.usonicRightCallback)
 
@@ -58,23 +58,23 @@ class AbstractCcr(object):
     # lidar scan topic call back sample
     # update lidar scan state
     def lidarCallback(self, data):
-        self.scan = data
+        self.scan = data.ranges
 
     # optical  scan topic call back sample
     # update lidar scan state
     def optLeftCallback(self, data):
-        self.opt[0] = data
+        self.opt[0] = min(data.ranges)
 
     def optRightCallback(self, data):
-        self.opt[1] = data
+        self.opt[1] = min(data.ranges)
 
     # usonic  scan topic call back sample
     # update lidar scan state
     def usonicLeftCallback(self, data):
-        self.usonic[0] = data
+        self.usonic[0] = min(data.ranges)
 
     def usonicRightCallback(self, data):
-        self.usonic[1] = data
+        self.usonic[1] = min(data.ranges)
 
     # bumper topic call back sample
     # update bumper state
