@@ -21,7 +21,7 @@ class KarashiTakanaBot(AbstractCcr):
         self.mode = "chaise"
         self.fps = 5
         self.rand_count = 0
-        self.mode_count = 100
+        self.mode_count = 999
 
     def targetIdCallback(self, data):
         self.mode = "rand"
@@ -36,11 +36,11 @@ class KarashiTakanaBot(AbstractCcr):
 
     def modeChange(self):
         '''
-        if get_target or timeout
+        if get_target
             chaise -> rand
         if time_out and found target
           rand -> chaise
-          mode_count = 25
+          mode_count = 15
         '''
         if self.mode == "chaise":
             self.mode = "rand"
@@ -55,7 +55,7 @@ class KarashiTakanaBot(AbstractCcr):
             return 0.3, 0
 
         # keep rand value 1sec(5frames)
-        x_th_table = [ [0.3,0], [0,1], [0,-1] ]
+        x_th_table = [ [0.3,-1], [0.3, 1], [0,1], [0,-1] ]
         if self.rand_count == 0:
             self.value = random.randint(0,len(x_th_table)-1 )
             self.rand_count = 5
@@ -157,6 +157,7 @@ class KarashiTakanaBot(AbstractCcr):
             # near wall
             if self.nearWall():
                 x, th = -0.3, 0.5
+                self.rand_count = 0
             elif self.mode == "chaise":
                 x, th = self.markerchaise()
             else:
